@@ -1,0 +1,45 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+npm-debug.log*
+.yarn/cache
+.yarn/install-state.gz
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/patches
+
+# Build
+.next
+out
+build
+dist
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.idea
+.vscode
+*.swp
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docs and misc
+*.md
+!README.md
+
+# Tests
+coverage
+.nyc_output
+*.test.*
+*.spec.*
+
+# Prisma (keep schema and migrations, ignore generated)
+# node_modules/.prisma is needed at runtime; we copy from builder

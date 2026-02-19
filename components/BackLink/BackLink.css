@@ -1,0 +1,63 @@
+.backLink {
+    display: inline-flex;
+    height: 2.75rem;
+    min-width: 100px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    letter-spacing: 0.02em;
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: #111827;
+    font-size: 0.9375rem;
+}
+
+.backLink:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.backLink > svg {
+    margin-right: 5px;
+    margin-left: 5px;
+    flex-shrink: 0;
+    transition: all 0.4s ease-in;
+}
+
+.backLink:hover > svg {
+    transform: translateX(-5px) scale(1.2);
+}
+
+.backLinkForward > svg {
+    margin-right: 0;
+    margin-left: 5px;
+    transform: scaleX(-1);
+}
+
+.backLinkForward:hover > svg {
+    transform: scaleX(-1) translateX(5px) scale(1.2);
+}
+
+.backLink:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+@media (prefers-color-scheme: dark) {
+    .backLink {
+        background-color: #1f2937;
+        border-color: #374151;
+        color: #e5e7eb;
+    }
+    .backLink:hover {
+        background-color: #374151;
+        border-color: #4b5563;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+}

@@ -1,0 +1,33 @@
+.chartWrap {
+    width: 100%;
+    min-height: 280px;
+}
+
+.chartLoader {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.chartEmpty {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    margin: 0;
+    padding: 2rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .chartEmpty {
+        color: #9ca3af;
+    }
+}
+
+.chartGrid {
+    stroke: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .chartGrid {
+        stroke: #4b5563;
+    }
+}

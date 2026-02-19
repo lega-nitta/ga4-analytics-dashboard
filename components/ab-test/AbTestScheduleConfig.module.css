@@ -1,0 +1,137 @@
+.scheduleConfig {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.executionType {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.radioLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.radioLabel:hover {
+    background: #f3f4f6;
+}
+
+.radioLabel input[type="radio"] {
+    cursor: pointer;
+}
+
+.numberInput {
+    width: 60px;
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+}
+
+.dateTimeInputs {
+    display: flex;
+    gap: 8px;
+    margin-left: 16px;
+}
+
+.dateTimeInputs input {
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+}
+
+.recurringConfig {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-left: 16px;
+    padding: 12px;
+    background: white;
+    border-radius: 4px;
+}
+
+.recurringConfig select,
+.recurringSelect {
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+}
+
+.recurringConfig input[type="time"] {
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+}
+
+.daysOfWeek {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.dayCheckbox {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dayCheckbox:hover {
+    background: #f3f4f6;
+}
+
+.dayCheckbox input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.monthlyConfig {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .scheduleConfig {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    .radioLabel:hover {
+        background: #374151;
+    }
+
+    .recurringConfig {
+        background: #111827;
+    }
+
+    .dayCheckbox:hover {
+        background: #374151;
+    }
+}

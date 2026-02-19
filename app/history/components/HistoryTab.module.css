@@ -1,0 +1,401 @@
+.loaderContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 3rem 0;
+}
+
+.errorContainer {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: #991b1b;
+}
+
+@media (prefers-color-scheme: dark) {
+    .errorContainer {
+        background-color: rgba(127, 29, 29, 0.2);
+        border-color: #7f1d1d;
+        color: #fca5a5;
+    }
+}
+
+.errorTitle {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.retryButton {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #dc2626;
+    color: white;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+    cursor: pointer;
+    border: none;
+}
+
+.retryButton:hover {
+    background-color: #b91c1c;
+}
+
+.searchForm {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .searchForm {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+}
+
+.searchInputContainer {
+    display: flex;
+    gap: 1rem;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .searchInput {
+        background-color: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+}
+
+.clearButton {
+    padding: 0.5rem 1.5rem;
+    background-color: #e5e7eb;
+    color: #1f2937;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+}
+
+.clearButton:hover {
+    background-color: #d1d5db;
+}
+
+@media (prefers-color-scheme: dark) {
+    .clearButton {
+        background-color: #374151;
+        color: #e5e7eb;
+    }
+
+    .clearButton:hover {
+        background-color: #4b5563;
+    }
+}
+
+.helpText {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+    .helpText {
+        color: #9ca3af;
+    }
+}
+
+.countText {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+@media (prefers-color-scheme: dark) {
+    .countText {
+        color: #9ca3af;
+    }
+}
+
+.emptyState {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .emptyState {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+}
+
+.emptyText {
+    color: #4b5563;
+    margin-bottom: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .emptyText {
+        color: #9ca3af;
+    }
+}
+
+.createButton {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #2563eb;
+    color: white;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.createButton:hover {
+    background-color: #1d4ed8;
+}
+
+.table {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+    .table {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+}
+
+.tableHead {
+    background-color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableHead {
+        background-color: #374151;
+    }
+}
+
+.tableHeader {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableHeader {
+        color: #d1d5db;
+    }
+}
+
+.tableBody {
+    border-top: 1px solid #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableBody {
+        border-top-color: #374151;
+    }
+}
+
+.tableRow {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+.tableRow:hover {
+    background-color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableRow {
+        border-bottom-color: #374151;
+    }
+
+    .tableRow:hover {
+        background-color: #374151;
+    }
+}
+
+.tableCell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #111827;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableCell {
+        color: #f3f4f6;
+    }
+}
+
+.actionCell {
+    padding: 0.75rem 1rem;
+}
+
+.actionContainer {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.actionLink {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: text-decoration 0.2s;
+}
+
+.actionLink:hover {
+    text-decoration: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+    .actionLink {
+        color: #60a5fa;
+    }
+}
+
+.deleteButton {
+    color: #dc2626;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+    padding: 0;
+}
+
+.deleteButton:hover {
+    text-decoration: underline;
+}
+
+.deleteButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (prefers-color-scheme: dark) {
+    .deleteButton {
+        color: #f87171;
+    }
+}
+
+.pagination {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.paginationButton {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: white;
+    color: #374151;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #f9fafb;
+}
+
+.paginationButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.paginationButtonActive {
+    background-color: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.paginationNumbers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .paginationButton {
+        background-color: #1f2937;
+        border-color: #374151;
+        color: #e5e7eb;
+    }
+
+    .paginationButton:hover:not(:disabled) {
+        background-color: #374151;
+    }
+}
+
+.statusBadge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.statusBadgeCompleted {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.statusBadgeFailed {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.statusBadgeRunning {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.statusBadgeDefault {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+    .statusBadgeCompleted {
+        background-color: #14532d;
+        color: #86efac;
+    }
+
+    .statusBadgeFailed {
+        background-color: #7f1d1d;
+        color: #fca5a5;
+    }
+
+    .statusBadgeRunning {
+        background-color: #1e3a8a;
+        color: #93c5fd;
+    }
+
+    .statusBadgeDefault {
+        background-color: #374151;
+        color: #d1d5db;
+    }
+}

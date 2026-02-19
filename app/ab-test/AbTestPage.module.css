@@ -1,0 +1,578 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+
+.headerActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    padding: 0 2.5rem;
+    border-radius: 10px;
+    transition: 0.4s;
+    cursor: pointer;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    box-sizing: border-box;
+}
+
+.buttonPrimary {
+    background-color: #00BFA6;
+    color: #fff;
+    border: 2px dashed #00BFA6;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
+}
+
+.buttonPrimary:hover {
+    background-color: #fff;
+    color: #00BFA6;
+    border: 2px dashed #00BFA6;
+}
+
+.buttonPrimary:active {
+    background-color: #87dbd0;
+    color: #fff;
+}
+
+.buttonSecondary {
+    background-color: #e5e7eb;
+    color: #1f2937;
+}
+
+.buttonSecondary:hover {
+    background-color: #d1d5db;
+}
+
+@media (prefers-color-scheme: dark) {
+    .buttonPrimary {
+        box-shadow: rgba(0, 0, 0, 0.3) 0 2px 5px -1px, rgba(0, 0, 0, 0.5) 0 1px 3px -1px;
+    }
+
+    .buttonPrimary:hover {
+        background-color: #111827;
+        color: #5eead4;
+        border-color: #5eead4;
+    }
+
+    .buttonPrimary:active {
+        background-color: #0d9488;
+    }
+
+    .buttonSecondary {
+        background-color: #374151;
+        color: #e5e7eb;
+    }
+
+    .buttonSecondary:hover {
+        background-color: #4b5563;
+    }
+}
+
+.errorContainer {
+    margin-bottom: 1.5rem;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: #991b1b;
+}
+
+@media (prefers-color-scheme: dark) {
+    .errorContainer {
+        background-color: rgba(127, 29, 29, 0.2);
+        border-color: #7f1d1d;
+        color: #fca5a5;
+    }
+}
+
+.errorTitle {
+    font-weight: 600;
+}
+
+.productSelector {
+    margin-bottom: 1rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .productSelector {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+}
+
+.productLabel {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.productSelectWrapper {
+    max-width: 18rem;
+    min-width: 10rem;
+}
+
+.productSelect {
+    padding: 0.35rem 1.75rem 0.35rem 0.625rem; /* 右: 矢印用の余白 */
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .productSelect {
+        border-color: #4b5563;
+    }
+}
+
+@media (min-width: 768px) {
+    .productSelect {
+        width: auto;
+    }
+}
+
+.calendarContainer {
+    margin-bottom: 1.5rem;
+}
+
+.selectedDateSection {
+    margin-bottom: 1.5rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .selectedDateSection {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+}
+
+.sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.testList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.testItem {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.testItem:hover {
+    background-color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .testItem {
+        border-color: #374151;
+    }
+
+    .testItem:hover {
+        background-color: #374151;
+    }
+}
+
+.testItemContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.testInfo {
+    flex: 1;
+}
+
+.testName {
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.testDescription {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .testDescription {
+        color: #9ca3af;
+    }
+}
+
+.testDetails {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+@media (prefers-color-scheme: dark) {
+    .testDetails {
+        color: #9ca3af;
+    }
+}
+
+.testActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.testButton {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.testButtonEdit {
+    background-color: #2563eb;
+    color: white;
+}
+
+.testButtonEdit:hover {
+    background-color: #1d4ed8;
+}
+
+.testButtonDelete {
+    background-color: #dc2626;
+    color: white;
+}
+
+.testButtonDelete:hover {
+    background-color: #b91c1c;
+}
+
+.tableContainer {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableContainer {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+}
+
+.tableHeader {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableHeader {
+        border-bottom-color: #374151;
+    }
+}
+
+.tableTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+}
+
+.tableHead {
+    background-color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableHead {
+        background-color: #374151;
+    }
+}
+
+.tableHeaderCell {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableHeaderCell {
+        color: #d1d5db;
+    }
+}
+
+.tableBody {
+    border-top: 1px solid #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableBody {
+        border-top-color: #374151;
+    }
+}
+
+.tableRow {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+.tableRow:hover {
+    background-color: #f9fafb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableRow {
+        border-bottom-color: #374151;
+    }
+
+    .tableRow:hover {
+        background-color: #374151;
+    }
+}
+
+.tableCell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #111827;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableCell {
+        color: #f3f4f6;
+    }
+}
+
+.tableCellCenter {
+    text-align: center;
+    color: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableCellCenter {
+        color: #9ca3af;
+    }
+}
+
+.tableCellName {
+    font-weight: 600;
+}
+
+.tableCellDescription {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tableCellDescription {
+        color: #9ca3af;
+    }
+}
+
+.statusContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.statusBadge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.statusBadgeRunning {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.statusBadgeCompleted {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.statusBadgeDefault {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+    .statusBadgeRunning {
+        background-color: rgba(22, 101, 52, 0.2);
+        color: #86efac;
+    }
+
+    .statusBadgeCompleted {
+        background-color: rgba(30, 64, 175, 0.2);
+        color: #93c5fd;
+    }
+
+    .statusBadgeDefault {
+        background-color: #374151;
+        color: #d1d5db;
+    }
+}
+
+.statusCount {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+    .statusCount {
+        color: #9ca3af;
+    }
+}
+
+.actionCell {
+    padding: 0.75rem 1rem;
+}
+
+.actionContainer {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.actionLink {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: text-decoration 0.2s;
+}
+
+.actionLink:hover {
+    text-decoration: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+    .actionLink {
+        color: #60a5fa;
+    }
+}
+
+.actionButton {
+    background: none;
+    border: none;
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: text-decoration 0.2s;
+}
+
+.actionButton:hover {
+    text-decoration: underline;
+}
+
+.actionButtonDelete {
+    color: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+    .actionButton {
+        color: #60a5fa;
+    }
+
+    .actionButtonDelete {
+        color: #f87171;
+    }
+}
+
+.loaderContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 3rem 0;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.75rem 0;
+}
+
+.paginationButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background-color: #fff;
+    color: #374151;
+    cursor: pointer;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #f9fafb;
+}
+
+.paginationButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.paginationInfo {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+    .paginationButton {
+        border-color: #4b5563;
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    .paginationButton:hover:not(:disabled) {
+        background-color: #374151;
+    }
+
+    .paginationInfo {
+        color: #9ca3af;
+    }
+}

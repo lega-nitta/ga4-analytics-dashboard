@@ -1,0 +1,80 @@
+# 本番・Docker 全体運用用（PostgreSQL + Redis + App + Scheduler）
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ga4-dashboard-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ga4_dashboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ga4-dashboard-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ga4-analytics-dashboard:latest
+    container_name: ga4-dashboard-app
+    restart: unless-stopped
+    ports:
+      - "3003:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ga4_dashboard?schema=public
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
+    # GA4_SERVICE_ACCOUNT_KEY_PATH を使う場合: プロジェクト直下に service-account-key.json を置く
+    volumes:
+      - ./service-account-key.json:/app/service-account-key.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  scheduler:
+    image: ga4-analytics-dashboard:latest
+    container_name: ga4-dashboard-scheduler
+    restart: unless-stopped
+    command: ["npx", "tsx", "workers/ab-test-scheduler.ts"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ga4_dashboard?schema=public
+      REDIS_URL: redis://redis:6379
+      APP_URL: http://app:3000
+    env_file:
+      - .env
+    volumes:
+      - ./service-account-key.json:/app/service-account-key.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_started
+
+volumes:
+  postgres_data:

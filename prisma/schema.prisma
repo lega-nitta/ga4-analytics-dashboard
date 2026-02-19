@@ -1,0 +1,249 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(255)
+  description     String?   @db.Text
+  domain          String?   @db.VarChar(255)
+  ga4PropertyId   String?   @db.VarChar(50)
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  reports         Report[]
+  abTests         AbTest[]
+  funnelConfigs   FunnelConfig[]
+  funnelExecutions FunnelExecution[]
+  heatmapEvents   HeatmapEvent[]
+  sessions        Session[]
+  pageCvConfigs   PageCvConfig[]
+  
+  @@index([isActive])
+  @@map("products")
+}
+
+model PageCvConfig {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  pagePath    String   @db.Text
+  cvEventName String   @db.VarChar(255)
+  cvDimension String?  @db.VarChar(80) // eventName | customEvent:data_click_label | customEvent:data_view_label
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, pagePath])
+  @@index([productId])
+  @@map("page_cv_configs")
+}
+
+model Report {
+  id              Int       @id @default(autoincrement())
+  productId       Int
+  name            String    @db.VarChar(255)
+  reportType      String    @db.VarChar(50)
+  config          Json
+  scheduleConfig  Json?
+  executionMode   String?   @db.VarChar(50) // 実行モード（'trend' = トレンド対象）
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  executions      ReportExecution[]
+  
+  @@index([productId])
+  @@index([reportType])
+  @@index([executionMode])
+  @@map("reports")
+}
+
+model ReportExecution {
+  id              Int       @id @default(autoincrement())
+  reportId        Int
+  status          String    @db.VarChar(50)
+  startedAt       DateTime?
+  completedAt     DateTime?
+  errorMessage    String?   @db.Text
+  resultData      Json?
+  createdAt       DateTime  @default(now())
+  
+  report          Report    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  abTestExecutions AbTestReportExecution[]
+  
+  @@index([reportId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("report_executions")
+}
+
+model AbTestReportExecution {
+  id              Int       @id @default(autoincrement())
+  abTestId        Int
+  reportExecutionId Int?   // ReportExecutionへの参照（既存のレポート実行結果を参照）
+  status          String    @default("pending") @db.VarChar(50) // pending, running, completed, failed
+  startedAt       DateTime?
+  completedAt     DateTime?
+  errorMessage    String?   @db.Text
+  resultData      Json?     // 実行結果データ（CVR結果、評価結果など）
+  createdAt       DateTime  @default(now())
+  
+  abTest          AbTest    @relation(fields: [abTestId], references: [id], onDelete: Cascade)
+  reportExecution ReportExecution? @relation(fields: [reportExecutionId], references: [id], onDelete: SetNull)
+  
+  @@index([abTestId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("ab_test_report_executions")
+}
+
+model AbTest {
+  id                    Int       @id @default(autoincrement())
+  productId             Int
+  name                  String    @db.VarChar(255)
+  description           String?   @db.Text
+  variantAName          String    @db.VarChar(255)
+  variantBName          String    @db.VarChar(255)
+  startDate             DateTime  @db.Date
+  endDate               DateTime? @db.Date
+  status                String    @default("running") @db.VarChar(50)
+  ga4Config             Json?     // GA4分析の設定（metrics, dimensions, filter, cvrA, cvrB等）
+  autoExecute           Boolean   @default(true) // 期間終了後の自動実行フラグ
+  scheduleConfig        Json?     // スケジュール設定（UI上で設定可能）
+  lastExecutedAt        DateTime? // 最後に実行した日時
+  evaluationConfig      Json?
+  winnerVariant         String?   @db.VarChar(1)   // 完了時の勝利バリアント A|B|C|D
+  improvementVsAPercent  Decimal?  @db.Decimal(8, 2) // A比の改善率（%）。B/C/D勝利時のみ
+  victoryFactors        String?   @db.Text         // 完了時メモ：勝利要因
+  defeatFactors         String?   @db.Text         // 完了時メモ：負け要因
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  results         AbTestResult[]
+  reportExecutions AbTestReportExecution[]
+  
+  @@index([productId])
+  @@index([status])
+  @@index([startDate, endDate])
+  @@index([autoExecute, endDate]) // 自動実行用インデックス
+  @@map("ab_tests")
+}
+
+model AbTestResult {
+  id                      Int       @id @default(autoincrement())
+  abTestId                Int
+  reportExecutionId       Int?
+  variant                 String    @db.VarChar(1)
+  pageViews               Int       @default(0)
+  conversions             Int       @default(0)
+  conversionRate          Decimal?  @db.Decimal(10, 6)
+  statisticalSignificance Decimal?  @db.Decimal(5, 2)
+  zScore                  Decimal?  @db.Decimal(10, 4)
+  periodDays              Int?
+  aiEvaluation            String?   @db.Text
+  recommendation          String?   @db.Text
+  createdAt               DateTime  @default(now())
+  
+  abTest                  AbTest    @relation(fields: [abTestId], references: [id], onDelete: Cascade)
+  
+  @@index([abTestId])
+  @@index([reportExecutionId])
+  @@map("ab_test_results")
+}
+
+model FunnelConfig {
+  id              Int       @id @default(autoincrement())
+  productId       Int
+  name            String    @db.VarChar(255)
+  description     String?   @db.Text
+  steps           Json
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([productId])
+  @@map("funnel_configs")
+}
+
+model FunnelExecution {
+  id              Int       @id @default(autoincrement())
+  productId       Int
+  name            String?   @db.VarChar(255)
+  funnelConfig    Json      // 実行時のファネル設定
+  filterConfig    Json?     // フィルター設定
+  startDate       DateTime  @db.Date
+  endDate         DateTime  @db.Date
+  resultData      Json      // ファネル分析結果
+  geminiEvaluation String?  @db.Text // Gemini評価結果
+  status          String    @default("completed") @db.VarChar(50)
+  errorMessage    String?   @db.Text
+  createdAt       DateTime  @default(now())
+  
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([productId])
+  @@index([createdAt(sort: Desc)])
+  @@map("funnel_executions")
+}
+
+model Session {
+  id              Int       @id @default(autoincrement())
+  productId       Int
+  sessionId       String    @db.VarChar(255)
+  userId          String?   @db.VarChar(255)
+  startedAt       DateTime
+  endedAt         DateTime?
+  pageViews       Int       @default(0)
+  durationSeconds Int?
+  referrer        String?   @db.Text
+  userAgent       String?   @db.Text
+  deviceType      String?   @db.VarChar(50)
+  createdAt       DateTime  @default(now())
+  
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([productId])
+  @@index([sessionId])
+  @@index([startedAt(sort: Desc)])
+  @@map("sessions")
+}
+
+model HeatmapEvent {
+  id              BigInt    @id @default(autoincrement())
+  productId       Int
+  sessionId       String    @db.VarChar(255)
+  pageUrl         String    @db.Text
+  eventType       String    @db.VarChar(50)
+  x               Int?
+  y               Int?
+  scrollDepth     Int?
+  viewportWidth   Int?
+  viewportHeight  Int?
+  elementSelector String?   @db.Text
+  metadata        Json?
+  timestamp       DateTime
+  createdAt       DateTime  @default(now())
+  
+  product         Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([productId, timestamp(sort: Desc)])
+  @@index([sessionId])
+  @@index([pageUrl])
+  @@index([eventType])
+  @@map("heatmap_events")
+}

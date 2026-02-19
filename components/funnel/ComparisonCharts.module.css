@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.chartWrapper {
+    width: 100%;
+}
+
+.emptyState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 16rem;
+    color: rgb(107, 114, 128);
+}
+
+@media (prefers-color-scheme: dark) {
+    .emptyState {
+        color: rgb(156, 163, 175);
+    }
+}

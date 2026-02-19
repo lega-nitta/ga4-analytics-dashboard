@@ -1,0 +1,227 @@
+import { Prisma } from '@prisma/client'
+import { prisma } from '@/lib/db/client'
+
+const pad2 = (n: number) => n.toString().padStart(2, '0')
+
+/** 編集フォームで入力した "YYYY-MM-DDTHH:mm" を JST（Asia/Tokyo）として解釈。Docker(UTC)でも表示と一致させる */
+function parseScheduledDateAsJST(s: string): Date | null {
+    if (!s || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(s)) return null
+    const withTz = /[Z+-]\d{2}:?\d{2}$/.test(s) ? s : `${s}+09:00`
+    const d = new Date(withTz)
+    return isNaN(d.getTime()) ? null : d
+}
+
+/** 指定日の HH:mm を JST として解釈した Date を返す（on_end / recurring 等で同一表示にするため） */
+function dateAtTimeJST(d: Date, time: string): Date {
+    const [h = 9, m = 0] = time.split(':').map(Number)
+    const y = d.getUTCFullYear()
+    const mo = d.getUTCMonth() + 1
+    const day = d.getUTCDate()
+    return new Date(`${y}-${pad2(mo)}-${pad2(day)}T${pad2(h)}:${pad2(m)}:00+09:00`)
+}
+
+export interface ScheduleConfig {
+    enabled: boolean
+    executionType: 'on_end' | 'on_end_delayed' | 'scheduled' | 'recurring'
+    delayDays?: number
+    scheduledDate?: string
+    recurringPattern?: {
+        frequency: 'daily' | 'weekly' | 'monthly'
+        time: string
+        daysOfWeek?: number[]
+        dayOfMonth?: number
+    }
+}
+
+/**
+ * 次回実行予定日時を計算
+ * @param config - スケジュール設定
+ * @param startDate - ABテスト開始日
+ * @param endDate - ABテスト終了日（nullの場合は未設定）
+ * @param lastExecutedAt - 最後の実行日時（nullの場合は未実行）
+ * @returns 次回実行予定日時、またはnull（実行予定がない場合）
+ */
+export function calculateNextExecutionDate(
+    config: ScheduleConfig,
+    startDate: Date,
+    endDate: Date | null,
+    lastExecutedAt: Date | null
+): Date | null {
+    if (!config.enabled || !endDate) return null
+
+    const now = new Date()
+    const timeStr = config.recurringPattern?.time || '09:00'
+
+    switch (config.executionType) {
+        case 'on_end':
+            // 期間終了日の指定時刻（JST で解釈）
+            const endExecution = dateAtTimeJST(endDate, timeStr)
+            return endExecution >= now ? endExecution : null
+
+        case 'on_end_delayed':
+            // 期間終了後N日後の指定時刻（JST で解釈）
+            const delayedDate = new Date(endDate)
+            delayedDate.setUTCDate(delayedDate.getUTCDate() + (config.delayDays || 0))
+            const delayedAtJST = dateAtTimeJST(delayedDate, timeStr)
+            return delayedAtJST >= now ? delayedAtJST : null
+
+        case 'scheduled':
+            // 特定の日時（編集フォームの日時は JST として解釈。Docker(UTC)でも表示と一致）
+            if (!config.scheduledDate) return null
+            const scheduled = parseScheduledDateAsJST(config.scheduledDate)
+            if (!scheduled) {
+                console.error(`[ScheduleService] Invalid scheduledDate: ${config.scheduledDate}`)
+                return null
+            }
+            return scheduled
+
+        case 'recurring':
+            // 繰り返し実行（時刻は JST で解釈）
+            if (!config.recurringPattern) return null
+
+            switch (config.recurringPattern.frequency) {
+                case 'daily': {
+                    const baseDate = lastExecutedAt || startDate
+                    const nextDate = new Date(baseDate)
+                    nextDate.setUTCDate(nextDate.getUTCDate() + 1)
+                    let dailyAtJST = dateAtTimeJST(nextDate, timeStr)
+                    if (dailyAtJST < now) {
+                        const jstToday = new Date(now.getTime() + 9 * 60 * 60 * 1000)
+                        dailyAtJST = dateAtTimeJST(jstToday, timeStr)
+                        if (dailyAtJST < now) dailyAtJST = dateAtTimeJST(new Date(jstToday.getTime() + 86400000), timeStr)
+                    }
+                    return dailyAtJST >= now ? dailyAtJST : null
+                }
+
+                case 'weekly': {
+                    const daysOfWeek = config.recurringPattern.daysOfWeek || [0]
+                    const currentDay = now.getUTCDay()
+                    const nextDay = daysOfWeek.find((d: number) => d > currentDay) ?? daysOfWeek[0]
+                    const daysUntilNext = nextDay > currentDay
+                        ? nextDay - currentDay
+                        : 7 - currentDay + nextDay
+                    const weeklyDate = new Date(now)
+                    weeklyDate.setUTCDate(weeklyDate.getUTCDate() + daysUntilNext)
+                    return dateAtTimeJST(weeklyDate, timeStr)
+                }
+
+                case 'monthly': {
+                    const dayOfMonth = config.recurringPattern.dayOfMonth || 1
+                    const monthlyDate = new Date(now)
+                    monthlyDate.setUTCDate(dayOfMonth)
+                    let monthlyAtJST = dateAtTimeJST(monthlyDate, timeStr)
+                    if (monthlyAtJST < now) {
+                        monthlyDate.setUTCMonth(monthlyDate.getUTCMonth() + 1)
+                        monthlyAtJST = dateAtTimeJST(monthlyDate, timeStr)
+                    }
+                    return monthlyAtJST
+                }
+
+                default:
+                    return null
+            }
+
+        default:
+            return null
+    }
+}
+
+/**
+ * 実行すべきABテストを検索
+ * スケジュール設定に基づいて、現在実行すべきABテストのIDリストを返す
+ * @returns 実行すべきABテストのID配列
+ */
+export async function findAbTestsToExecute(): Promise<number[]> {
+    const now = new Date()
+    const abTests = await prisma.abTest.findMany({
+        where: {
+            status: 'running',
+            autoExecute: true,
+            scheduleConfig: { not: Prisma.JsonNull },
+        },
+    })
+
+    const abTestIds: number[] = []
+
+    for (const abTest of abTests) {
+        const config = abTest.scheduleConfig as unknown as ScheduleConfig
+        if (!config || !config.enabled) continue
+
+        const nextExecution = calculateNextExecutionDate(
+            config,
+            abTest.startDate,
+            abTest.endDate,
+            abTest.lastExecutedAt
+        )
+
+        // 実行時刻が現在時刻を過ぎている場合
+        if (nextExecution && nextExecution <= now) {
+            // 実行済みチェック（scheduledの場合は時刻も含めてチェック）
+            const config = abTest.scheduleConfig as unknown as ScheduleConfig
+            let existingExecution = null
+            
+            if (config.executionType === 'scheduled') {
+                // scheduledの場合は、同じ日時の実行をチェック（時刻も含む）
+                const executionStart = new Date(nextExecution)
+                executionStart.setMinutes(executionStart.getMinutes() - 1) // 1分前から
+                const executionEnd = new Date(nextExecution)
+                executionEnd.setMinutes(executionEnd.getMinutes() + 1) // 1分後まで
+                
+                existingExecution = await prisma.abTestReportExecution.findFirst({
+                    where: {
+                        abTestId: abTest.id,
+                        createdAt: {
+                            gte: executionStart,
+                            lte: executionEnd,
+                        },
+                        status: { in: ['completed', 'running'] },
+                    },
+                })
+            } else {
+                // その他の場合は、同じ日でチェック
+                const executionDate = new Date(nextExecution)
+                executionDate.setHours(0, 0, 0, 0)
+                const nextDay = new Date(executionDate)
+                nextDay.setDate(nextDay.getDate() + 1)
+
+                existingExecution = await prisma.abTestReportExecution.findFirst({
+                    where: {
+                        abTestId: abTest.id,
+                        createdAt: {
+                            gte: executionDate,
+                            lt: nextDay,
+                        },
+                        status: { in: ['completed', 'running'] },
+                    },
+                })
+            }
+
+            if (!existingExecution) {
+                abTestIds.push(abTest.id)
+            }
+        }
+    }
+
+    return abTestIds
+}
+
+/**
+ * 次回実行予定日時を取得
+ * @param abTestId - ABテストID
+ * @returns 次回実行予定日時、またはnull（実行予定がない場合）
+ */
+export async function getNextExecutionDate(abTestId: number): Promise<Date | null> {
+    const abTest = await prisma.abTest.findUnique({
+        where: { id: abTestId },
+    })
+
+    if (!abTest || !abTest.scheduleConfig) return null
+
+    const config = abTest.scheduleConfig as unknown as ScheduleConfig
+    return calculateNextExecutionDate(
+        config,
+        abTest.startDate,
+        abTest.endDate,
+        abTest.lastExecutedAt
+    )
+}

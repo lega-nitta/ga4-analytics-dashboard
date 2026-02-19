@@ -1,0 +1,33 @@
+.wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.wrapper select {
+    width: 100%;
+    background-image: none !important;
+}
+
+.arrow {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5563;
+    transition: transform 0.2s ease;
+}
+
+.wrapper:focus-within .arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+@media (prefers-color-scheme: dark) {
+    .arrow {
+        color: #e5e7eb;
+    }
+}

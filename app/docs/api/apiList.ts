@@ -1,0 +1,353 @@
+/**
+ * API エンドポイント一覧（docs/api 表示用）
+ */
+
+import type { ApiEndpoint } from './types'
+
+export const API_LIST: { category: string; endpoints: ApiEndpoint[] }[] = [
+    {
+        category: 'ダッシュボード',
+        endpoints: [
+            {
+                path: '/api/dashboard',
+                method: 'GET',
+                name: 'ダッシュボード統計',
+                description: '月次統計・ABテスト数・ファネル数・日別サマリなどを取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: false, description: 'プロダクトIDで絞り込み' },
+                    { name: 'month', type: 'string', required: false, description: 'YYYY-MM 形式の対象月' },
+                ],
+                responseNote: 'DashboardStats（month, productCount, abTestCount, dailyStats 等）',
+            },
+            {
+                path: '/api/dashboard/page-metrics',
+                method: 'GET',
+                name: 'ページメトリクス',
+                description: '指定期間のページ別 PV/CV/CVR 等のメトリクスを取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                    { name: 'startDate', type: 'string', required: true, description: '開始日 YYYY-MM-DD' },
+                    { name: 'endDate', type: 'string', required: true, description: '終了日 YYYY-MM-DD' },
+                ],
+                responseNote: 'PageMetrics 配列',
+            },
+            {
+                path: '/api/dashboard/page-metrics/series',
+                method: 'GET',
+                name: 'ページメトリクス時系列',
+                description: '期間内の日別・週別などの時系列メトリクスを取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                    { name: 'startDate', type: 'string', required: true, description: '開始日' },
+                    { name: 'endDate', type: 'string', required: true, description: '終了日' },
+                    { name: 'granularity', type: 'string', required: false, description: 'day / week など' },
+                ],
+                responseNote: 'series 配列（日付・PV・CV・sessions 等）',
+            },
+            {
+                path: '/api/dashboard/page-cv-config',
+                method: 'GET',
+                name: 'ページCV設定',
+                description: 'ページごとのCVイベント・ディメンション設定を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                ],
+                responseNote: 'ページパス別の CV 設定一覧',
+            },
+        ],
+    },
+    {
+        category: 'ABテスト',
+        endpoints: [
+            {
+                path: '/api/ab-test',
+                method: 'GET',
+                name: 'ABテスト一覧',
+                description: 'ABテスト一覧を取得（ページネーション対応、デフォルト5件/ページ）。',
+                params: [
+                    { name: 'productId', type: 'number', required: false, description: 'プロダクトID' },
+                    { name: 'status', type: 'string', required: false, description: 'running / paused / completed' },
+                    { name: 'page', type: 'number', required: false, description: 'ページ番号' },
+                    { name: 'limit', type: 'number', required: false, description: '件数（最大50）' },
+                ],
+                responseNote: 'abTests 配列と total',
+            },
+            {
+                path: '/api/ab-test',
+                method: 'POST',
+                name: 'ABテスト作成',
+                description: '新規ABテストを作成します。',
+                params: [],
+                responseNote: '作成された AbTest',
+            },
+            {
+                path: '/api/ab-test/[id]',
+                method: 'GET',
+                name: 'ABテスト詳細',
+                description: '指定IDのABテスト詳細を取得します。',
+                params: [],
+                responseNote: 'AbTest（product, reportExecutions 等含む）',
+            },
+            {
+                path: '/api/ab-test/[id]',
+                method: 'PATCH',
+                name: 'ABテスト更新',
+                description: 'ABテストの設定・ステータスを更新します。',
+                params: [],
+                responseNote: '更新後の AbTest',
+            },
+            {
+                path: '/api/ab-test/[id]/status',
+                method: 'PATCH',
+                name: 'ABテストステータス変更',
+                description: 'running / paused / completed などのステータスを変更します。',
+                params: [],
+                responseNote: '更新後の AbTest',
+            },
+            {
+                path: '/api/ab-test/[id]/execution-mode',
+                method: 'PATCH',
+                name: 'ABテスト実行モード',
+                description: '実行モード（手動/自動など）を変更します。',
+                params: [],
+                responseNote: '更新後の AbTest',
+            },
+            {
+                path: '/api/ab-test/[id]/next-execution',
+                method: 'POST',
+                name: '次回実行予約',
+                description: '次回実行日時を設定します。',
+                params: [],
+                responseNote: '更新後の AbTest',
+            },
+            {
+                path: '/api/ab-test/execute',
+                method: 'POST',
+                name: 'ABテスト実行',
+                description: 'ABテストを1回実行し、結果を保存します。',
+                params: [],
+                responseNote: '実行結果',
+            },
+            {
+                path: '/api/ab-test/test-execute',
+                method: 'POST',
+                name: 'ABテストテスト実行',
+                description: '実行処理のテスト用エンドポイントです。',
+                params: [],
+                responseNote: 'テスト実行結果',
+            },
+            {
+                path: '/api/ab-test/evaluate',
+                method: 'POST',
+                name: 'ABテスト評価',
+                description: 'ABテストの勝者判定・評価を行います。',
+                params: [],
+                responseNote: '評価結果',
+            },
+            {
+                path: '/api/ab-test/check-webhook',
+                method: 'GET',
+                name: 'Webhook確認',
+                description: 'Webhook の疎通・設定確認用です。',
+                params: [],
+                responseNote: '確認結果',
+            },
+            {
+                path: '/api/ab-test/history',
+                method: 'GET',
+                name: 'ABテスト履歴',
+                description: '完了したABテストの履歴一覧を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: false, description: 'プロダクトID' },
+                ],
+                responseNote: '完了ABテスト一覧',
+            },
+        ],
+    },
+    {
+        category: '分析・レポート',
+        endpoints: [
+            {
+                path: '/api/analytics/report',
+                method: 'GET',
+                name: '分析レポート',
+                description: 'GA4 分析レポートデータを取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                ],
+                responseNote: 'レポートデータ',
+            },
+            {
+                path: '/api/analytics/data',
+                method: 'GET',
+                name: '分析データ',
+                description: 'GA4 の生データを取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                    { name: 'startDate', type: 'string', required: true, description: '開始日' },
+                    { name: 'endDate', type: 'string', required: true, description: '終了日' },
+                ],
+                responseNote: 'GA4 レスポンスデータ',
+            },
+            {
+                path: '/api/reports',
+                method: 'GET',
+                name: 'レポート一覧',
+                description: '保存済みレポート一覧を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: false, description: 'プロダクトID' },
+                ],
+                responseNote: 'レポート一覧',
+            },
+            {
+                path: '/api/reports/history',
+                method: 'GET',
+                name: 'レポート履歴',
+                description: 'レポート実行履歴を取得します。',
+                params: [],
+                responseNote: '履歴一覧',
+            },
+            {
+                path: '/api/reports/history/[id]',
+                method: 'GET',
+                name: 'レポート履歴詳細',
+                description: '指定IDのレポート履歴詳細を取得します。',
+                params: [],
+                responseNote: '履歴詳細',
+            },
+            {
+                path: '/api/reports/[id]',
+                method: 'GET',
+                name: 'レポート詳細',
+                description: '指定IDのレポートを取得します。',
+                params: [],
+                responseNote: 'レポート詳細',
+            },
+        ],
+    },
+    {
+        category: 'トレンド',
+        endpoints: [
+            {
+                path: '/api/trend/summary',
+                method: 'GET',
+                name: 'トレンドサマリ',
+                description: '月次トレンドのサマリを取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                    { name: 'month', type: 'string', required: false, description: 'YYYY-MM' },
+                ],
+                responseNote: 'トレンドサマリ',
+            },
+            {
+                path: '/api/trend/monthly',
+                method: 'GET',
+                name: '月次トレンド',
+                description: '月別のPV/CV/CVR推移を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                    { name: 'months', type: 'number', required: false, description: '取得月数' },
+                ],
+                responseNote: '月次データ配列',
+            },
+        ],
+    },
+    {
+        category: 'ファネル',
+        endpoints: [
+            {
+                path: '/api/funnel/entry-form',
+                method: 'GET',
+                name: 'エントリーフォーム設定',
+                description: 'エントリーフォームファネルの設定を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                ],
+                responseNote: 'ファネル設定',
+            },
+            {
+                path: '/api/funnel/entry-form/compare',
+                method: 'GET',
+                name: 'エントリーフォーム比較',
+                description: 'フォームステップ間の比較データを取得します。',
+                params: [],
+                responseNote: '比較データ',
+            },
+            {
+                path: '/api/funnel/executions',
+                method: 'GET',
+                name: 'ファネル実行一覧',
+                description: 'ファネル実行履歴一覧を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: false, description: 'プロダクトID' },
+                ],
+                responseNote: '実行一覧',
+            },
+            {
+                path: '/api/funnel/executions/[id]',
+                method: 'GET',
+                name: 'ファネル実行詳細',
+                description: '指定IDのファネル実行詳細を取得します。',
+                params: [],
+                responseNote: '実行詳細',
+            },
+            {
+                path: '/api/funnel/engagement',
+                method: 'GET',
+                name: 'エンゲージメントファネル',
+                description: 'エンゲージメントファネルの集計を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                ],
+                responseNote: 'エンゲージメント集計',
+            },
+            {
+                path: '/api/funnel/engagement/summary',
+                method: 'GET',
+                name: 'エンゲージメントサマリ',
+                description: 'エンゲージメントのサマリを取得します。',
+                params: [],
+                responseNote: 'サマリ',
+            },
+            {
+                path: '/api/funnel/engagement/page-paths',
+                method: 'GET',
+                name: 'エンゲージメントページパス',
+                description: 'ページパス一覧を取得します。',
+                params: [],
+                responseNote: 'ページパス一覧',
+            },
+        ],
+    },
+    {
+        category: 'ヒートマップ・その他',
+        endpoints: [
+            {
+                path: '/api/heatmap/view-labels',
+                method: 'GET',
+                name: 'ヒートマップビューラベル',
+                description: 'ヒートマップ用のビューラベル一覧を取得します。',
+                params: [
+                    { name: 'productId', type: 'number', required: true, description: 'プロダクトID' },
+                ],
+                responseNote: 'ラベル一覧',
+            },
+            {
+                path: '/api/ga4/metadata',
+                method: 'GET',
+                name: 'GA4メタデータ',
+                description: '利用可能なメトリクス・ディメンション一覧を取得します。',
+                params: [],
+                responseNote: 'メトリクス・ディメンション一覧',
+            },
+            {
+                path: '/api/products',
+                method: 'GET',
+                name: 'プロダクト一覧',
+                description: 'プロダクト一覧を取得します。',
+                params: [],
+                responseNote: 'Product 配列',
+            },
+        ],
+    },
+]

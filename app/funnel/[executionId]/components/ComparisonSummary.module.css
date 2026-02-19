@@ -1,0 +1,161 @@
+.container {
+    background-color: white;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .container {
+        background-color: rgb(31, 41, 55);
+        border-color: rgb(55, 65, 81);
+    }
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgb(55, 65, 75);
+    margin-bottom: 0.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .sectionTitle {
+        color: rgb(209, 213, 219);
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .gridCols4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .gridCols6 {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .gridCols8 {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+}
+
+.card {
+    background-color: rgb(249, 250, 251);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: rgba(55, 65, 81, 0.5);
+    }
+}
+
+.cardLabel {
+    font-size: 0.75rem;
+    color: rgb(75, 85, 99);
+    margin-bottom: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .cardLabel {
+        color: rgb(156, 163, 175);
+    }
+}
+
+.baseline {
+    margin-left: 0.25rem;
+    color: rgb(107, 114, 128);
+}
+
+@media (prefers-color-scheme: dark) {
+    .baseline {
+        color: rgb(156, 163, 175);
+    }
+}
+
+.cardValue {
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.cardValueBlue {
+    color: rgb(37, 99, 235);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cardValueBlue {
+        color: rgb(96, 165, 250);
+    }
+}
+
+.cardValuePurple {
+    color: rgb(147, 51, 234);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cardValuePurple {
+        color: rgb(196, 181, 253);
+    }
+}
+
+.cardValueGreen {
+    color: rgb(22, 163, 74);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cardValueGreen {
+        color: rgb(74, 222, 128);
+    }
+}
+
+.cardValueRed {
+    color: rgb(220, 38, 38);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cardValueRed {
+        color: rgb(248, 113, 113);
+    }
+}
+
+.cardSubtext {
+    font-size: 0.75rem;
+    color: rgb(107, 114, 128);
+    margin-top: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .cardSubtext {
+        color: rgb(156, 163, 175);
+    }
+}

@@ -1,0 +1,53 @@
+.container {
+    background-color: white;
+    border: 1px solid rgb(229, 231, 235);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .container {
+        background-color: rgb(31, 41, 55);
+        border-color: rgb(55, 65, 81);
+    }
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.875rem;
+}
+
+.buttonActive {
+    background-color: rgb(37, 99, 235);
+    color: white;
+}
+
+.buttonInactive {
+    background-color: rgb(229, 231, 235);
+    color: rgb(55, 65, 75);
+}
+
+.buttonInactive:hover {
+    background-color: rgb(209, 213, 219);
+}
+
+@media (prefers-color-scheme: dark) {
+    .buttonInactive {
+        background-color: rgb(55, 65, 81);
+        color: rgb(209, 213, 219);
+    }
+
+    .buttonInactive:hover {
+        background-color: rgb(75, 85, 99);
+    }
+}
