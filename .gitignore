@@ -28,15 +28,10 @@ yarn-error.log*
 .env*.local
 .env
 
-# vercel
-.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# prisma
-/prisma/migrations
 
 # service account keys
 service-account-key.json
