@@ -27,5 +27,9 @@ services:
       timeout: 3s
       retries: 5
 
+  app:
+    ports:
+      - "3003:3000"
+
 volumes:
   postgres_data:
