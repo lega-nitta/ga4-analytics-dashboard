@@ -27,9 +27,11 @@ export async function POST(request: NextRequest) {
         }
 
         const res = NextResponse.json({ ok: true })
+        const forwardedProto = request.headers.get('x-forwarded-proto')
+        const isHttps = forwardedProto === 'https' || request.nextUrl?.protocol === 'https:'
         res.cookies.set(AUTH_COOKIE, '1', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: isHttps,
             sameSite: 'lax',
             maxAge: COOKIE_MAX_AGE,
             path: '/',
