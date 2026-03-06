@@ -1,13 +1,15 @@
 'use client'
 
 import { Suspense, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import styles from './LoginPage.module.css'
 
 function LoginForm() {
-    const router = useRouter()
     const searchParams = useSearchParams()
-    const from = searchParams.get('from') || '/'
+    const fromParam = searchParams.get('from') || '/'
+    const from = typeof fromParam === 'string' && fromParam.startsWith('/') && !fromParam.startsWith('//')
+        ? fromParam
+        : '/'
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -38,8 +40,7 @@ function LoginForm() {
             setLoading(false)
 
             setTimeout(() => {
-                router.push(from)
-                router.refresh()
+                window.location.href = from
             }, 2200)
         } catch {
             setError('接続に失敗しました')
