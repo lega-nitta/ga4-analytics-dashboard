@@ -297,7 +297,7 @@ export default function AbTestDetailPage() {
                             )
                         })}
                         {!abTest.ga4Config.dimensions && !abTest.ga4Config.filter?.dimension &&
-                            !['cvrA', 'cvrB', 'cvrC', 'cvrD'].some((k) => {
+                            !(['cvrA', 'cvrB', 'cvrC', 'cvrD'] as const).some((k) => {
                                 const c = abTest.ga4Config?.[k]
                                 return c && (c.denominatorLabels || c.numeratorLabels)
                             }) && (
