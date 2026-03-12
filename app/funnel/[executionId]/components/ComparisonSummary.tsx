@@ -14,7 +14,7 @@ export default function ComparisonSummary({ periods }: ComparisonSummaryProps) {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>📈 期間比較サマリー</h2>
+            <h2 className={styles.title}>期間比較サマリー</h2>
             <div className={styles.content}>
                 <div className={styles.section}>
                     <h3 className={styles.sectionTitle}>総エントリー数</h3>

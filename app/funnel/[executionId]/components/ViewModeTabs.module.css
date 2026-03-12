@@ -1,6 +1,6 @@
 .container {
     background-color: #1f2937;
-    border: 1px solid rgb(229, 231, 235);
+    border: 1px solid #4b5563;
     border-radius: 0.5rem;
     padding: 1rem;
     margin-bottom: 1.5rem;
@@ -21,21 +21,17 @@
 }
 
 .buttonActive {
-    background-color: rgb(37, 99, 235);
-    color: white;
+    background-color: #2563eb;
+    color: #fff;
 }
 
 .buttonInactive {
-    background-color: rgb(229, 231, 235);
-    color: rgb(55, 65, 75);
+    background-color: #374151;
+    color: #d1d5db;
 }
 
 .buttonInactive:hover {
-    background-color: rgb(209, 213, 219);
+    background-color: #4b5563;
+    color: #e5e7eb;
 }
-
-.buttonInactive {
-        background-color: rgb(55, 65, 81);
-        color: rgb(209, 213, 219);
-    }
 

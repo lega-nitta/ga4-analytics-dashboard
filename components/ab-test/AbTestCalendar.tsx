@@ -23,18 +23,31 @@ export default function AbTestCalendar({ abTests, onDateClick }: AbTestCalendarP
         setCurrentDate(new Date())
     }
 
+    const toLocalDateString = (d: Date) => {
+        const y = d.getFullYear()
+        const m = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        return `${y}-${m}-${day}`
+    }
+
+    const toDateOnlyString = (dateInput: string | Date) => {
+        const d = new Date(dateInput)
+        const y = d.getUTCFullYear()
+        const m = String(d.getUTCMonth() + 1).padStart(2, '0')
+        const day = String(d.getUTCDate()).padStart(2, '0')
+        return `${y}-${m}-${day}`
+    }
+
     const getTestsForDate = (date: Date): AbTest[] => {
-        const dateStr = date.toISOString().split('T')[0]
+        const dateStr = toLocalDateString(date)
         const filteredTests = abTests.filter((test) => {
-            const startDate = new Date(test.startDate).toISOString().split('T')[0]
-            const endDate = test.endDate
-                ? new Date(test.endDate).toISOString().split('T')[0]
-                : null
-            
+            const startDate = toDateOnlyString(test.startDate)
+            const endDate = test.endDate ? toDateOnlyString(test.endDate) : null
+
             if (dateStr < startDate) return false
-            
+
             if (endDate && dateStr > endDate) return false
-            
+
             return test.status === 'running' || test.status === 'completed'
         })
         
